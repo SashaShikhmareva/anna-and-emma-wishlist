@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мой Виш-лист</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(109, 93, 252, 0.16), transparent 32%),
+                linear-gradient(135deg, #f8f7ff 0%, #fff7ed 100%);
+            padding-top: 56px;
+            color: #1f2937;
+        }
+
+        .wish-container {
+            max-width: 920px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.92)
+            padding: 32px;
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(31, 41, 55, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        .page-title {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #1f2937;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            color: #6b7280;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid #eef0f4;
+            background: transparent;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.18s ease, transform 0.18s ease;
+        }
+
+        .table tbody tr:hover {
+            background-color: #faf9ff;
+        }
+
+        .gift-title {
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .gift-description {
+            color: #6b7280;
+        }
+
+        .reserved {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .reserve-form {
+            width: 100%;
+            max-width: none;
+        }
+
+        .reserve-form .form-control {
+            min-width: 0;
+        }
+
+        .form-control {
+            border-radius: 999px;
+            border-color: #e5e7eb;
+        }
+
+        .form-control:focus {
+            border-color: #6d5dfc;
+            box-shadow: 0 0 0 0.2rem rgba(109, 93, 252, 0.15);
+        }
+
+        .btn-primary {
+            background-color: #6d5dfc;
+            border-color: #6d5dfc;
+            border-radius: 999px;
+            font-weight: 600;
+            padding-inline: 16px;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4be0;
+            border-color: #5a4be0;
+        }
+
+        .reserved-badge {
+            background-color: #dcfce7;
+            color: #166534;
+            font-weight: 600;
+            padding: 0.45rem 0.7rem;
+        }
+
+        .cancel-link {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .cancel-link:hover {
+            color: #b02a37;
+            text-decoration: underline !important;
+        }
+
+        .empty-state {
+            padding: 48px 24px;
+            border: 1px dashed #d8d3ff;
+            border-radius: 20px;
+            background: #fbfaff;
+        }
+
+        .empty-state-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .gift-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .gift-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 360px;
+            min-width: 0;
+            padding: 0;
+            border: 1px solid #eef0f4;
+            border-radius: 20px;
+            background: #ffffff;
+            box-shadow: 0 10px 24px rgba(31, 41, 55, 0.06);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-2px);
+            border-color: #d8d3ff;
+            box-shadow: 0 16px 32px rgba(31, 41, 55, 0.10);
+        }
+
+        .gift-card-reserved {
+            background: #fbfbfb;
+        }
+
+        .gift-card-image {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                radial-gradient(circle at top left, rgba(109, 93, 252, 0.20), transparent 35%),
+                linear-gradient(135deg, #f3f1ff 0%, #fff7ed 100%);
+            color: #6d5dfc;
+            font-size: 3rem;
+        }
+
+        .gift-card-photo {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background: #f3f4f6;
+        }
+
+        .gift-card-content {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            padding: 18px;
+        }
+
+        .gift-card-header {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            min-height: 0;
+            margin-bottom: 14px;
+        }
+
+        .gift-description {
+            flex: 1;
+            min-height: 0;
+            max-height: 86px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 6px;
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .gift-card-actions {
+            flex-shrink: 0;
+            margin-top: auto;
+            padding-top: 14px;
+        }
+
+            .gift-description::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .gift-description::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .gift-description::-webkit-scrollbar-thumb {
+                background: #d8d3ff;
+                border-radius: 999px;
+            }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .wish-container {
+                padding: 18px;
+                border-radius: 20px;
+            }
+
+            .gift-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reserve-form {
+                max-width: none;
+                flex-direction: column;
+            }
+
+            .reserve-form .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wish-container shadow-sm">
+    <div class="text-center mb-4">
+        <h2 class="page-title mb-2">🎁 Мой список желаний</h2>
+        <p class="page-subtitle mb-0">Выберите подарок и забронируйте его, чтобы не было повторов</p>
+    </div>
+
+    <div class="gift-grid" th:if="${!#lists.isEmpty(items)}">
+        <div class="gift-card" th:each="item : ${items}" th:classappend="${item.isReserved} ? ' gift-card-reserved' : ''">
+            <img th:if="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)}"
+                 th:src="${item.imageUrl}"
+                 th:alt="${item.title}"
+                 class="gift-card-photo">
+
+            <div th:if="${item.imageUrl == null or #strings.isEmpty(item.imageUrl)}" class="gift-card-image">
+                🎁
+            </div>
+
+            <div class="gift-card-content">
+                <div class="gift-card-header">
+                    <h5 class="gift-title mb-1" th:classappend="${item.isReserved} ? ' reserved' : ''" th:text="${item.title}">
+                        Название
+                    </h5>
+                    <p class="gift-description mb-0" th:text="${item.description}">
+                        Описание здесь
+                    </p>
+                </div>
+
+                <div class="gift-card-actions">
+                    <div th:if="${!item.isReserved}">
+                        <form th:action="@{/reserve/{id}(id=${item.id})}" method="post" class="reserve-form d-flex gap-2">
+                            <input type="text" name="name" class="form-control form-control-sm" placeholder="Ваше имя" required>
+                            <button type="submit" class="btn btn-primary btn-sm">Забронировать</button>
+                        </form>
+                    </div>
+
+                    <div th:if="${item.isReserved}" class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge rounded-pill reserved-badge">
+                            Забронировано: <span th:text="${item.reservedBy}">Имя</span>
+                        </span>
+                        <form th:action="@{/unreserve/{id}(id=${item.id})}" method="post" class="m-0">
+                            <button type="submit" class="btn btn-link btn-sm cancel-link text-decoration-none p-0">
+                                Отменить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(items)}" class="empty-state text-center text-muted">
+        <div class="empty-state-icon">📝</div>
+        <h5 class="mb-2">Список пока пуст</h5>
+        <p class="mb-0">Добавьте первый подарок в базе данных, и он появится здесь.</p>
+    </div>
+</div>
+
+</body>
+</html>

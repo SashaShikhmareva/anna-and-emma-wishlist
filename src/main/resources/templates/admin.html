@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Админка подарков</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background:
+                    radial-gradient(circle at top left, rgba(109, 93, 252, 0.16), transparent 32%),
+                    linear-gradient(135deg, #f8f7ff 0%, #fff7ed 100%);
+            padding: 48px 12px;
+            color: #1f2937;
+        }
+
+        .admin-container {
+            max-width: 980px;
+            margin: auto;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(31, 41, 55, 0.10);
+            padding: 28px;
+        }
+
+        .page-title {
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+        }
+
+        .form-control {
+            border-radius: 14px;
+            border-color: #e5e7eb;
+        }
+
+        .form-control:focus {
+            border-color: #6d5dfc;
+            box-shadow: 0 0 0 0.2rem rgba(109, 93, 252, 0.15);
+        }
+
+        .btn-primary {
+            background-color: #6d5dfc;
+            border-color: #6d5dfc;
+            border-radius: 999px;
+            font-weight: 600;
+            padding-inline: 18px;
+        }
+
+        .btn-primary:hover {
+            background-color: #5a4be0;
+            border-color: #5a4be0;
+        }
+
+        .gift-preview {
+            width: 72px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #f3f4f6;
+        }
+
+        .gift-placeholder {
+            width: 72px;
+            height: 56px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: #f3f1ff;
+            font-size: 1.4rem;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table th {
+            color: #6b7280;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .danger-link {
+            color: #dc3545;
+            font-weight: 500;
+        }
+
+        .danger-link:hover {
+            color: #b02a37;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <div class="d-flex justify-content-between align-items-center gap-3 mb-4">
+        <div>
+            <h1 class="page-title mb-1">🎛️ Админка подарков</h1>
+            <p class="page-subtitle mb-0">Добавляйте подарки, описания и ссылки на изображения</p>
+        </div>
+        <a href="/" class="btn btn-outline-secondary rounded-pill">Открыть список</a>
+    </div>
+
+    <div class="admin-card mb-4">
+        <h4 class="mb-3">Добавить подарок</h4>
+
+        <form th:action="@{/admin/gifts}" method="post" class="row g-3">
+            <div class="col-md-6">
+                <label for="title" class="form-label">Название</label>
+                <input id="title" type="text" name="title" class="form-control" placeholder="Например: Книга" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="imageUrl" class="form-label">Ссылка на картинку</label>
+                <input id="imageUrl" type="text" name="imageUrl" class="form-control" placeholder="/images/book.jpg">
+            </div>
+
+            <div class="col-12">
+                <label for="description" class="form-label">Описание</label>
+                <textarea id="description" name="description" class="form-control" rows="3" placeholder="Коротко опишите подарок" required></textarea>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Добавить подарок</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="admin-card">
+        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h4 class="mb-0">Текущие подарки</h4>
+            <span class="text-muted small" th:text="'Всего: ' + ${#lists.size(items)}">Всего: 0</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(items)}" class="text-center text-muted py-4">
+            Пока нет подарков. Добавьте первый выше.
+        </div>
+
+        <div class="table-responsive" th:if="${!#lists.isEmpty(items)}">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Фото</th>
+                    <th>Подарок</th>
+                    <th>Статус</th>
+                    <th class="text-end">Действие</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${items}">
+                    <td>
+                        <img th:if="${item.imageUrl != null and !#strings.isEmpty(item.imageUrl)}"
+                             th:src="${item.imageUrl}"
+                             th:alt="${item.title}"
+                             class="gift-preview">
+
+                        <div th:if="${item.imageUrl == null or #strings.isEmpty(item.imageUrl)}" class="gift-placeholder">
+                            🎁
+                        </div>
+                    </td>
+                    <td>
+                        <div class="fw-semibold" th:text="${item.title}">Название</div>
+                        <div class="text-muted small" th:text="${item.description}">Описание</div>
+                    </td>
+                    <td>
+                        <span th:if="${item.isReserved}" class="badge rounded-pill text-bg-success">
+                            Забронировано
+                        </span>
+                        <span th:if="${!item.isReserved}" class="badge rounded-pill text-bg-light">
+                            Свободно
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <form th:action="@{/admin/gifts/{id}/delete(id=${item.id})}" method="post" class="m-0">
+                            <button type="submit" class="btn btn-link btn-sm danger-link text-decoration-none p-0">
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
