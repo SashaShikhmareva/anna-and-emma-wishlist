@@ -8,8 +8,8 @@
         body {
             min-height: 100vh;
             background:
-                radial-gradient(circle at top left, rgba(109, 93, 252, 0.16), transparent 32%),
-                linear-gradient(135deg, #f8f7ff 0%, #fff7ed 100%);
+                    radial-gradient(circle at top left, rgba(109, 93, 252, 0.16), transparent 32%),
+                    linear-gradient(135deg, #f8f7ff 0%, #fff7ed 100%);
             padding-top: 56px;
             color: #1f2937;
         }
@@ -17,7 +17,7 @@
         .wish-container {
             max-width: 920px;
             margin: auto;
-            background: rgba(255, 255, 255, 0.92)
+            background: rgba(255, 255, 255, 0.92);
             padding: 32px;
             border-radius: 24px;
             box-shadow: 0 20px 45px rgba(31, 41, 55, 0.10);
@@ -141,7 +141,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            height: 360px;
+            height: 440px !important;
             min-width: 0;
             padding: 0;
             border: 1px solid #eef0f4;
@@ -162,22 +162,22 @@
         }
 
         .gift-card-image {
-            height: 150px;
+            height: 230px !important;
             display: flex;
             align-items: center;
             justify-content: center;
             background:
-                radial-gradient(circle at top left, rgba(109, 93, 252, 0.20), transparent 35%),
-                linear-gradient(135deg, #f3f1ff 0%, #fff7ed 100%);
+                    radial-gradient(circle at top left, rgba(109, 93, 252, 0.20), transparent 35%),
+                    linear-gradient(135deg, #f3f1ff 0%, #fff7ed 100%);
             color: #6d5dfc;
             font-size: 3rem;
         }
 
         .gift-card-photo {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            object-position: center;
+            width: 100% !important;
+            height: 230px !important;
+            object-fit: cover !important;
+            object-position: top center !important;
             display: block;
             background: #f3f4f6;
         }
@@ -195,13 +195,13 @@
             flex: 1;
             flex-direction: column;
             min-height: 0;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         .gift-description {
             flex: 1;
             min-height: 0;
-            max-height: 86px;
+            max-height: 80px;
             overflow-y: auto;
             overflow-x: hidden;
             padding-right: 6px;
@@ -209,27 +209,27 @@
             font-size: 0.95rem;
             line-height: 1.45;
             overflow-wrap: anywhere;
-            word-break: break-word;
+            word-break: break-all;
         }
 
         .gift-card-actions {
             flex-shrink: 0;
             margin-top: auto;
-            padding-top: 14px;
+            padding-top: 10px;
         }
 
-            .gift-description::-webkit-scrollbar {
-                width: 6px;
-            }
+        .gift-description::-webkit-scrollbar {
+            width: 6px;
+        }
 
-            .gift-description::-webkit-scrollbar-track {
-                background: transparent;
-            }
+        .gift-description::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-            .gift-description::-webkit-scrollbar-thumb {
-                background: #d8d3ff;
-                border-radius: 999px;
-            }
+        .gift-description::-webkit-scrollbar-thumb {
+            background: #d8d3ff;
+            border-radius: 999px;
+        }
 
         @media (max-width: 480px) {
             body {
@@ -280,7 +280,7 @@
                     <h5 class="gift-title mb-1" th:classappend="${item.isReserved} ? ' reserved' : ''" th:text="${item.title}">
                         Название
                     </h5>
-                    <p class="gift-description js-linkify mb-0" th:text="${item.description}">
+                    <p class="gift-description mb-0 js-linkify" th:text="${item.description}">
                         Описание здесь
                     </p>
                 </div>
@@ -328,7 +328,7 @@
                     if (!url.match(/^https?:\/\//i)) {
                         href = 'http://' + url;
                     }
-                    return '<a href="' + href + '" target="_blank" rel="noopener noreferrer" style="color: #6d5dfc; text-decoration: underline;">' + url + '</a>';
+                    return '<a href="' + href + '" target="_blank" rel="noopener noreferrer" style="color: #6d5dfc; text-decoration: underline; font-weight: 600;">Ссылка на товар 🔗</a>';
                 });
 
                 element.innerHTML = html;
