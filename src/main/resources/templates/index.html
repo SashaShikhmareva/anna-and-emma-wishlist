@@ -280,7 +280,7 @@
                     <h5 class="gift-title mb-1" th:classappend="${item.isReserved} ? ' reserved' : ''" th:text="${item.title}">
                         Название
                     </h5>
-                    <p class="gift-description mb-0" th:text="${item.description}">
+                    <p class="gift-description js-linkify mb-0" th:text="${item.description}">
                         Описание здесь
                     </p>
                 </div>
@@ -314,6 +314,28 @@
         <p class="mb-0">Добавьте первый подарок в базе данных, и он появится здесь.</p>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+
+        document.querySelectorAll('.js-linkify').forEach(function (element) {
+            let text = element.innerText;
+
+            if (urlRegex.test(text)) {
+                let html = text.replace(urlRegex, function (url) {
+                    let href = url;
+                    if (!url.match(/^https?:\/\//i)) {
+                        href = 'http://' + url;
+                    }
+                    return '<a href="' + href + '" target="_blank" rel="noopener noreferrer" style="color: #6d5dfc; text-decoration: underline;">' + url + '</a>';
+                });
+
+                element.innerHTML = html;
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
